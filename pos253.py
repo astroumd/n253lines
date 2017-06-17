@@ -1,9 +1,14 @@
+
+#
+# See also Table 2 in  http://adsabs.harvard.edu/abs/2015ApJ...801...63M
+#
+
 def pos253(i):
     """ return key positions in N253 (1..10) from Meier's Table 2:
-         0 = blank, if you want to use the peak in the cube
-        11 = map center, the reference position of N253
+            0 = map center, the reference position of N253
+        1..10 = reference positions in the table
     """
-    pos = [ [],                                     # 0 = blank
+    pos = [ ['00h47m33.100s',   '-25d17m17.50s' ],  # map reference 
             ['00h47m33.041s',	'-25d17m26.61s'	],  # pos 1
             ['00h47m32.290s',	'-25d17m19.10s'	],  #     2
             ['00h47m31.936s',	'-25d17m29.10s'	],  #     3
@@ -14,6 +19,6 @@ def pos253(i):
             ['00h47m33.647s',	'-25d17m13.10s'	],  #     8
             ['00h47m33.942s',	'-25d17m11.10s'	],  #     9
             ['00h47m34.148s',	'-25d17m12.30s'	],  # pos 10
-            ['00h47m33.100s',   '-25d17m17.50s' ],  # map reference 
           ]
+    if i<0: return pos       # special case
     return pos[i]
