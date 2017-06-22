@@ -5,6 +5,11 @@
 #
 #
 #  22-jun-2017  PJT             summer project - cloned off cubespectrum.py
+#
+#
+#  @todo
+#     - have optional RSTFREQ as 3rd argument
+#     - resample the gauss finer (not 5 points but may be 10x more?)
 
 
 import os, sys
