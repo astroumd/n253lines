@@ -12,7 +12,7 @@
 #     - resample the gauss finer (not 5 points but may be 10x more?)
 
 
-import os, sys
+import os, sys, math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -84,8 +84,11 @@ x = channel[ipeak-m:ipeak+m]
 y = flux[ipeak-m:ipeak+m]
 xmean = (x*y).sum() / y.sum()
 xdisp = (x*x*y).sum() / y.sum() - xmean*xmean
-print("MOMENTS:",xmean,xdisp)
-ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/xdisp)
+if xdisp > 0:
+    xdisp = math.sqrt(xdisp)
+fwhm = 2.355 * xdisp    
+print("MEAN/DISP/FWHM:",xmean,xdisp,fwhm)
+ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
 
