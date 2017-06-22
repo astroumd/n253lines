@@ -3,7 +3,14 @@
 #  Load a FITS cube , extract the spectrum at a (or reference) pixel
 #  and operate and plot some and then more...
 #
-#  21-apr-2016  Peter Teuben    hackday at "SPECTROSCOPY TOOLS IN PYTHON WORKSHOP" STSCI
+#
+#  Note: you cannot yet  "pip install specutils" since that's the old 0.2.2 specutils
+#        it needs the developer version
+#        https://github.com/nmearl/specutils
+#
+#
+#  21-apr-2017  Peter Teuben    hackday at "SPECTROSCOPY TOOLS IN PYTHON WORKSHOP" STSCI
+#  20-jun-2017  PJT             summer project 
 
 
 import os, sys
