@@ -10,6 +10,7 @@
 #  @todo
 #     - have optional RSTFREQ as 3rd argument
 #     - resample the gauss finer (not 5 points but may be 10x more?)
+#     - output the spectrum in a table, much like testCubeSpectrum.tab
 
 
 import os, sys, math
