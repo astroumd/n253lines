@@ -11,6 +11,8 @@
 #    line_matching.py test3.csp.tab test3.tier?.tab
 #  where any of the test3.???.tab can be tested
 
+from __future__ import print_function
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons, CheckButtons
@@ -307,7 +309,7 @@ def makelinedict(afile):
             if line.startswith('#'): continue
             (key,val) = line.split()
             tier[val] = key
-    print "Found %d lines in %s" % (len(tier),afile)
+    print("Found %d lines in %s" % (len(tier),afile))
     return tier
 
 
@@ -365,7 +367,7 @@ def updateh(val):
 
     old_v  = v
     old_z  = z
-    print "delt={0}".format(delt)
+    print("delt={0}".format(delt))
     fac = 1.0 + delt
     l.set_xdata(freq*fac)
     fig.canvas.draw_idle()
@@ -408,7 +410,7 @@ def toggletiers(label):
 
 if __name__ == "__main__":
     if len(sys.argv) == 1 or len(sys.argv) > 6:
-        print "Usage: {0} spectrum [tier1 [tier2 [tier3 [restfreq]]]]".format(sys.argv[0])
+        print("Usage: {0} spectrum [tier1 [tier2 [tier3 [restfreq]]]]".format(sys.argv[0]))
         sys.exit(0)
 
 
@@ -465,7 +467,7 @@ if __name__ == "__main__":
             tamp += x
             count += 1
         astart = tamp/count
-        print astart
+        print(astart)
 
         axamp  = plt.axes([0.2, 0.25, 0.03, 0.65], axisbg=axcolor)
         samp   = VertSlider(axamp,'amp',amin,amax,valinit=astart)
@@ -481,7 +483,7 @@ if __name__ == "__main__":
     vmax = 3000.0
 
     zmin = -0.01
-    zmax = 2
+    zmax = 3
 
     axfreq = plt.axes([0.25, 0.1, 0.65, 0.03], axisbg=axcolor)
     axz    = plt.axes([0.25, 0.15, 0.65, 0.03], axisbg=axcolor)
