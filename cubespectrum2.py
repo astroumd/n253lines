@@ -8,7 +8,7 @@
 #
 #
 #  @todo
-#     - have optional RSTFREQ as 3rd argument
+#     - have optional RESTFRQ or RESTFREQ as 3rd argument
 #     - resample the gauss finer (not 5 points but may be 10x more?)
 #     - output the spectrum in a table, much like testCubeSpectrum.tab
 
@@ -74,6 +74,8 @@ channelv = (1.0-channelf/restfreq) * c
 
 # what we plot
 channel = channelv
+#channel = channelf
+#channel = channeln
 
 ipeak = flux.argmax()
 xpeak = channel[ipeak]
