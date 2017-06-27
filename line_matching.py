@@ -332,7 +332,7 @@ def plotsetlines(tier,lines,toggle,lmin,lmax):
         lw = 1
         
     for name in lines:
-        x.append(lines[name])
+        x.append(float(lines[name]))
         a.append(plt.annotate(s=name, xy=(lines[name], maxl), xytext=(lines[name], maxl+lmax*0.2), rotation=90,size='large', visible=toggle))
     return plt.vlines(x, minl, maxl, lw=lw,visible=toggle), a
 
