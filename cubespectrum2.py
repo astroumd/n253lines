@@ -41,7 +41,7 @@ h = hdu[0].header
 d = hdu[0].data.squeeze()
 print(d.shape)
 
-#  grab the restfreq, there are at least two way how this is done
+#  grab the restfreq, there are at least two ways how this is done
 if 'RESTFRQ' in h:
     restfreq=h['RESTFRQ']
 elif 'RESTFREQ' in h:
@@ -69,11 +69,15 @@ zero     = np.zeros(nchan)
 cdelt3 = h['CDELT3']
 crval3 = h['CRVAL3']
 crpix3 = h['CRPIX3']
+# to convert the channel to frequency
 channelf = (channeln-crpix3+1)*cdelt3 + crval3
+# to convert the Frequency to velocity
 channelv = (1.0-channelf/restfreq) * c
+print (channelf)
+print (channelv)
 
 # what we plot
-channel = channelv
+channel = channelv #x axis
 #channel = channelf
 #channel = channeln
 
@@ -82,7 +86,7 @@ xpeak = channel[ipeak]
 ypeak = flux[ipeak]
 
 # moments around the peak
-m = 5
+m = 50
 x = channel[ipeak-m:ipeak+m]
 y = flux[ipeak-m:ipeak+m]
 xmean = (x*y).sum() / y.sum()
@@ -104,5 +108,21 @@ plt.ylabel("Flux")
 plt.title("Spectrum at position %g %g" % (xpos,ypos))
 plt.legend()
 plt.show()
+
+#to create a table of the frequency and flux
+x = channelf /1000000000 #to set the freqency to GHz
+y = flux 
+np.savetxt('Frequency_Flux.tab',np.c_[x,y], delimiter='  ',header=("Frequency""       " "Flux"),comments='#',fmt='%.8f')
+
+
+
+
+
+
+
+
+
+
+
 
 
