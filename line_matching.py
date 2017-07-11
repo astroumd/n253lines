@@ -10,6 +10,12 @@
 #  Example run:
 #    line_matching.py test3.csp.tab test3.tier?.tab
 #  where any of the test3.???.tab can be tested
+#
+#  @todo
+#    - keep the line ID fixed on the plot, not on the flux scale
+#
+#  Originally written by Maaike Visser during summer 2015 (?) under python 2
+#  jul-2017:    adapted for python3 [peter teuben]
 
 from __future__ import print_function
 
@@ -354,6 +360,8 @@ def updateh(val):
     global old_v, old_z
     v = svlsr.val/c
     z = sreds.val
+
+    delt = None
     
     if v != old_v:
         delt = v
@@ -365,12 +373,17 @@ def updateh(val):
             svlsr.reset() #if you start using the other horizontal slider, the one you were using before should reset (alternative to linked sliders)
            
 
-    old_v  = v
-    old_z  = z
-    print("delt={0}".format(delt))
-    fac = 1.0 + delt
-    l.set_xdata(freq*fac)
-    fig.canvas.draw_idle()
+    # sometimes delt was not set.... protect against a crash here (basically try again)
+    # this never happened on python2, but is common in python3
+    if delt != None:
+        old_v  = v
+        old_z  = z
+        print("delt={0}".format(delt))
+        fac = 1.0 + delt
+        l.set_xdata(freq*fac)
+        fig.canvas.draw_idle()
+    else:
+        print("delt was not set .... odd....")
 
 def updatevlsr(val):
     pass
