@@ -6,7 +6,9 @@ To grab a copy of this project from git:
     git clone https://github.com/astroumd/n253lines
 
 Currently this is in a private GIT repo, so you will need git 1.7.10
-or above to download this with the right credentials.
+or above to download this with the right credentials. 
+There is still a question if we can commit in 1.7.1 even though
+the repo is now public.
 
 
 

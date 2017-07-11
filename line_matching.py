@@ -326,8 +326,8 @@ def plotsetlines(tier,lines,toggle,lmin,lmax):
     a = []
     maxl = lmax
     if tier == 1:
-        minl = lmin
-        lw = 2
+        minl = lmin / 100
+        lw = 1
         
     elif tier == 2:
         minl = lmin * 1.05
@@ -339,7 +339,7 @@ def plotsetlines(tier,lines,toggle,lmin,lmax):
         
     for name in lines:
         x.append(float(lines[name]))
-        a.append(plt.annotate(s=name, xy=(lines[name], maxl), xytext=(lines[name], maxl+lmax*0.2), rotation=90,size='large', visible=toggle))
+        a.append(plt.annotate(s=name, xy=(lines[name], maxl), xytext=(lines[name], maxl+lmax*0.23), rotation=90,size='large', visible=toggle))
     return plt.vlines(x, minl, maxl, lw=lw,visible=toggle), a
 
 
