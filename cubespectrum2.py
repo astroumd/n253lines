@@ -20,6 +20,9 @@ import matplotlib.pyplot as plt
 from astropy.io import fits
 from astropy.units import Quantity
 c = 299792.458     # there should be a way to get 'c' from astropy.units ?
+restfreq = 112000000000
+print(restfreq)
+
 
 if len(sys.argv) == 1:
     print("Usage: %s fitsfile [xpos ypos]" % sys.argv[0])
@@ -42,13 +45,13 @@ d = hdu[0].data.squeeze()
 print(d.shape)
 
 #  grab the restfreq, there are at least two ways how this is done
-if 'RESTFRQ' in h:
-    restfreq=h['RESTFRQ']
-elif 'RESTFREQ' in h:
-    restfreq=h['RESTFREQ']
-else:
-    restfreq=None
-print("RESTFREQ",restfreq)
+#if 'RESTFRQ' in h:
+#    restfreq=h['RESTFRQ']
+#elif 'RESTFREQ' in h:
+#    restfreq=h['RESTFREQ']
+#else:
+#    restfreq=None
+#print("RESTFREQ",restfreq)
 
 if pos == None:
     # the FITS reference pixel is always a good backup
@@ -73,13 +76,16 @@ crpix3 = h['CRPIX3']
 channelf = (channeln-crpix3+1)*cdelt3 + crval3
 # to convert the Frequency to velocity
 channelv = (1.0-channelf/restfreq) * c
-print (channelf)
-print (channelv)
+#print (channelf)
+#print (channelv)
 
 # what we plot
 channel = channelv #x axis
 #channel = channelf
 #channel = channeln
+
+
+
 
 ipeak = flux.argmax()
 xpeak = channel[ipeak]
@@ -100,6 +106,9 @@ ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
 plt.figure()
+plt.plot
+plt.xlim([-900,-550])
+plt.ylim([-0.001,0.004])
 plt.plot(channel,flux,'o-',markersize=2,label='data')
 plt.plot(channel,zero)
 plt.plot(x,ymodel,label='gauss')
@@ -108,6 +117,7 @@ plt.ylabel("Flux")
 plt.title("Spectrum at position %g %g" % (xpos,ypos))
 plt.legend()
 plt.show()
+
 
 #to create a table of the frequency and flux
 x = channelf /1000000000 #to set the freqency to GHz
