@@ -20,20 +20,31 @@ import matplotlib.pyplot as plt
 from astropy.io import fits
 from astropy.units import Quantity
 c = 299792.458     # there should be a way to get 'c' from astropy.units ?
-restfreq = 112000000000
-print(restfreq)
+
 
 
 if len(sys.argv) == 1:
     print("Usage: %s fitsfile [xpos ypos]" % sys.argv[0])
     sys.exit(1)
-
-if len(sys.argv) > 3:
+elif len(sys.argv) > 3:
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
 elif len(sys.argv) == 2:
     fitsfile = sys.argv[1]
     pos = None
+ 
+
+vmin = vmax = None 
+
+vmin = -900
+vmax = -550
+
+
+
+restfreq = 112e9
+print(restfreq)
+
+
 
 # open the fits file
 hdu = fits.open(fitsfile)
@@ -104,25 +115,36 @@ print("MEAN/DISP/FWHM:",xmean,xdisp,fwhm)
 ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
+if vmin != None: 
+ plt.figure()
+ plt.plot
+ plt.xlim([vmin,vmax])
+ plt.plot(channel,flux,'o-',markersize=2,label='data')
+ plt.plot(channel,zero)
+ plt.plot(x,ymodel,label='gauss')
+ plt.xlabel("Velocity (km/s)")
+ plt.ylabel("Flux")
+ plt.title("Spectrum at position %g %g" % (xpos,ypos))
+ plt.legend()
+ plt.show()
 
-plt.figure()
-plt.plot
-plt.xlim([-900,-550])
-plt.ylim([-0.001,0.004])
-plt.plot(channel,flux,'o-',markersize=2,label='data')
-plt.plot(channel,zero)
-plt.plot(x,ymodel,label='gauss')
-plt.xlabel("Velocity (km/s)")
-plt.ylabel("Flux")
-plt.title("Spectrum at position %g %g" % (xpos,ypos))
-plt.legend()
-plt.show()
-
+else:  
+ plt.figure()
+ plt.plot
+ plt.xlim([vmin,vmax])
+ plt.plot(channel,flux,'o-',markersize=2,label='data')
+ plt.plot(channel,zero)
+ plt.plot(x,ymodel,label='gauss')
+ plt.xlabel("Velocity (km/s)")
+ plt.ylabel("Flux")
+ plt.title("Spectrum at position %g %g" % (xpos,ypos))
+ plt.legend()
+ plt.show()
 
 #to create a table of the frequency and flux
-x = channelf /1000000000 #to set the freqency to GHz
-y = flux 
-np.savetxt('Frequency_Flux.tab',np.c_[x,y], delimiter='  ',header=("Frequency""       " "Flux"),comments='#',fmt='%.8f')
+xtab = channelf /1e9 #to set the freqency to GHz
+ytab = flux 
+np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ',header=("Frequency""       " "Flux"),comments='#',fmt='%.8f')
 
 
 
