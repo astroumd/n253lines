@@ -5,26 +5,27 @@
 #
 #
 #  22-jun-2017  PJT             summer project - cloned off cubespectrum.py
-#
+#  july-2017    Thomas/Peter    various improvements
 #
 #  @todo
-#     - have optional RESTFRQ or RESTFREQ as 3rd argument
+#     - have optional RESTFRQ or RESTFREQ as 3rd argument [done]
+#     - output the spectrum in a table, much like testCubeSpectrum.tab [done]
 #     - resample the gauss finer (not 5 points but may be 10x more?)
-#     - output the spectrum in a table, much like testCubeSpectrum.tab
 
 
 import os, sys, math
 import numpy as np
+import numpy.ma as ma
 import matplotlib.pyplot as plt
 
 from astropy.io import fits
 from astropy.units import Quantity
-c = 299792.458     # there should be a way to get 'c' from astropy.units ?
+c = 299792.458     # [km/s] there should be a way to get 'c' from astropy.units ?
 
 
 
 if len(sys.argv) == 1:
-    print("Usage: %s fitsfile [xpos ypos]" % sys.argv[0])
+    print("Usage: %s fitsfile [xpos ypos] [restfreq [vmin vmax]]" % sys.argv[0])
     sys.exit(1)
 elif len(sys.argv) > 3:
     fitsfile = sys.argv[1]
@@ -32,13 +33,15 @@ elif len(sys.argv) > 3:
 elif len(sys.argv) == 2:
     fitsfile = sys.argv[1]
     pos = None
- 
 
-vmin = vmax = None 
 
-vmin = -900
-vmax = -550
+use_vel = True
 
+if True:
+    vmin = vmax = None 
+else:
+    vmin = -900
+    vmax = -550
 
 
 restfreq = 112e9
@@ -97,7 +100,6 @@ channel = channelv #x axis
 
 
 
-
 ipeak = flux.argmax()
 xpeak = channel[ipeak]
 ypeak = flux[ipeak]
@@ -115,13 +117,15 @@ print("MEAN/DISP/FWHM:",xmean,xdisp,fwhm)
 ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
-if vmin != None: 
+if use_vel:
  plt.figure()
  plt.plot
- plt.xlim([vmin,vmax])
- plt.plot(channel,flux,'o-',markersize=2,label='data')
- plt.plot(channel,zero)
- plt.plot(x,ymodel,label='gauss')
+ if vmin != None:
+     channelv = ma.masked_outside(channelv,vmin,vmax)
+     plt.xlim([vmin,vmax])
+ plt.plot(channelv,flux,'o-',markersize=2,label='data')
+ plt.plot(channelv,zero)
+ # plt.plot(x,ymodel,label='gauss')
  plt.xlabel("Velocity (km/s)")
  plt.ylabel("Flux")
  plt.title("Spectrum at position %g %g" % (xpos,ypos))
