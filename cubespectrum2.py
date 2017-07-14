@@ -35,7 +35,7 @@ elif len(sys.argv) == 2:
     pos = None
 
 
-use_vel = True
+use_vel = False
 
 if True:
     vmin = vmax = None 
@@ -118,32 +118,28 @@ ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
 if use_vel:
- plt.figure()
- plt.plot
- if vmin != None:
-     channelv = ma.masked_outside(channelv,vmin,vmax)
-     plt.xlim([vmin,vmax])
- plt.plot(channelv,flux,'o-',markersize=2,label='data')
- plt.plot(channelv,zero)
- # plt.plot(x,ymodel,label='gauss')
- plt.xlabel("Velocity (km/s)")
- plt.ylabel("Flux")
- plt.title("Spectrum at position %g %g" % (xpos,ypos))
- plt.legend()
- plt.show()
+   plt.figure()
+   if vmin != None:
+       channelv = ma.masked_outside(channelv,vmin,vmax)
+       plt.xlim([vmin,vmax])
+   plt.plot(channelv,flux,'o-',markersize=2,label='data')
+   plt.plot(channelv,zero)
+#  plt.plot(x,ymodel,label='gauss')
+   plt.xlabel("Velocity (km/s)")
+   plt.ylabel("Flux")
+   plt.title("Spectrum at position %g %g" % (xpos,ypos))
+   plt.legend()
+   plt.show()
 
 else:  
- plt.figure()
- plt.plot
- plt.xlim([vmin,vmax])
- plt.plot(channel,flux,'o-',markersize=2,label='data')
- plt.plot(channel,zero)
- plt.plot(x,ymodel,label='gauss')
- plt.xlabel("Velocity (km/s)")
- plt.ylabel("Flux")
- plt.title("Spectrum at position %g %g" % (xpos,ypos))
- plt.legend()
- plt.show()
+   plt.figure()
+   plt.plot(channelf,flux,'o-',markersize=2,label='data')
+   plt.plot(channelf,zero)
+   plt.xlabel("Frequncy (GHz)")
+   plt.ylabel("Flux")
+   plt.title("Spectrum at position %g %g" % (xpos,ypos))
+   plt.legend()
+   plt.show()
 
 #to create a table of the frequency and flux
 xtab = channelf /1e9 #to set the freqency to GHz
