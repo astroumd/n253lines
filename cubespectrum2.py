@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 #
 #  Load a FITS cube , extract the spectrum at a (or reference) pixel
-#  and operate and plot some and then more...
+#  and operate and plot some and then more....
 #
 #
 #  22-jun-2017  PJT             summer project - cloned off cubespectrum.py
