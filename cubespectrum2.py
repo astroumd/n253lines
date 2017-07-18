@@ -24,28 +24,61 @@ c = 299792.458     # [km/s] there should be a way to get 'c' from astropy.units 
 
 
 
-if len(sys.argv) == 1:
-    print("Usage: %s fitsfile [xpos ypos] [restfreq [vmin vmax]]" % sys.argv[0])
-    sys.exit(1)
-elif len(sys.argv) > 3:
+#if len(sys.argv) == 1:
+#    print("Usage: %s fitsfile [xpos ypos] [restfreq [vmin vmax]]" % sys.argv[0])
+#    sys.exit(1)
+#elif len(sys.argv) == 3:
+#    print("need ypos")
+#    sys.exit(1)
+#elif len(sys.argv) > 3:
+#    fitsfile = sys.argv[1]
+#    pos = [int(sys.argv[2]),int(sys.argv[3])]
+#elif len(sys.argv) == 2:
+#    fitsfile = sys.argv[1]
+#    pos = None
+
+
+
+
+na = len(sys.argv)
+
+if na == 7:
+    fitsfile = sys.argv[1] 
+    pos = [int(sys.argv[2]),int(sys.argv[3])]
+    restfreq = int(sys.argv[4])
+    print(restfreq)
+    vmin = int(sys.argv[5])
+    vmax = int(sys.argv[6])
+    use_vel = True
+
+elif na == 5: 
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
-elif len(sys.argv) == 2:
+    restfreq = sys.argv[4]
+    print(restfreq)
+    use_vel = True
+
+elif na == 4:
+    fitsfile = sys.argv[1]
+    pos = [int(sys.argv[2]),int(sys.argv[3])]
+    restfreq = 112e9
+    vmin = None
+    use_vel = True
+
+elif na == 4:
+    fitsfile = sys.argv[1]
+    pos = [int(sys.argv[2]),int(sys.argv[3])]
+    use_vel = False
+
+elif na == 2:
     fitsfile = sys.argv[1]
     pos = None
+    use_vel = False
 
+else:
+    sys.exit(1)
 
 use_vel = False
-
-if True:
-    vmin = vmax = None 
-else:
-    vmin = -900
-    vmax = -550
-
-
-restfreq = 112e9
-print(restfreq)
 
 
 
@@ -58,6 +91,7 @@ h = hdu[0].header
 d = hdu[0].data.squeeze()
 print(d.shape)
 
+
 #  grab the restfreq, there are at least two ways how this is done
 #if 'RESTFRQ' in h:
 #    restfreq=h['RESTFRQ']
@@ -67,6 +101,10 @@ print(d.shape)
 #    restfreq=None
 #print("RESTFREQ",restfreq)
 
+
+
+
+
 if pos == None:
     # the FITS reference pixel is always a good backup
     xpos = int(h['CRPIX1'])
@@ -75,6 +113,9 @@ if pos == None:
 else:
     xpos = pos[0]
     ypos = pos[1]
+
+
+
 
 
 flux     = d[:,ypos,xpos]
@@ -89,15 +130,21 @@ crpix3 = h['CRPIX3']
 # to convert the channel to frequency
 channelf = (channeln-crpix3+1)*cdelt3 + crval3
 # to convert the Frequency to velocity
-channelv = (1.0-channelf/restfreq) * c
+#channelv = (1.0-channelf/restfreq) * c
 #print (channelf)
 #print (channelv)
 
 # what we plot
-channel = channelv #x axis
+#channel = channelv 
 #channel = channelf
 #channel = channeln
 
+if use_vel:
+# to convert the Frequency to velocity
+    channelv = (1.0-channelf/restfreq) * c
+    channel = channelv
+else:
+    channel = channelf
 
 
 ipeak = flux.argmax()
@@ -117,8 +164,13 @@ print("MEAN/DISP/FWHM:",xmean,xdisp,fwhm)
 ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
+
+
+
+
+
 if use_vel:
-   plt.figure()
+   plt.figure()  
    if vmin != None:
        channelv = ma.masked_outside(channelv,vmin,vmax)
        plt.xlim([vmin,vmax])
@@ -127,7 +179,7 @@ if use_vel:
 #  plt.plot(x,ymodel,label='gauss')
    plt.xlabel("Velocity (km/s)")
    plt.ylabel("Flux")
-   plt.title("Spectrum at position %g %g" % (xpos,ypos))
+   plt.title(fitsfile + restfreq + "Spectrum at position %g %g" % (xpos,ypos))
    plt.legend()
    plt.show()
 
@@ -135,11 +187,12 @@ else:
    plt.figure()
    plt.plot(channelf,flux,'o-',markersize=2,label='data')
    plt.plot(channelf,zero)
-   plt.xlabel("Frequncy (GHz)")
+   plt.xlabel("Frequency (GHz)")
    plt.ylabel("Flux")
-   plt.title("Spectrum at position %g %g" % (xpos,ypos))
+   plt.title(fitsfile + "Spectrum at position %g %g" % (xpos,ypos))
    plt.legend()
    plt.show()
+
 
 #to create a table of the frequency and flux
 xtab = channelf /1e9 #to set the freqency to GHz
