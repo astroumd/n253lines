@@ -45,40 +45,35 @@ na = len(sys.argv)
 if na == 7:
     fitsfile = sys.argv[1] 
     pos = [int(sys.argv[2]),int(sys.argv[3])]
-    restfreq = int(sys.argv[4])
-    print(restfreq)
-    vmin = int(sys.argv[5])
-    vmax = int(sys.argv[6])
+    restfreq = float(sys.argv[4])
+    vmin = float(sys.argv[5])
+    vmax = float(sys.argv[6])
     use_vel = True
 
 elif na == 5: 
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
-    restfreq = sys.argv[4]
-    print(restfreq)
+    vmin = vmax = None
+    restfreq = float(sys.argv[4])
     use_vel = True
 
 elif na == 4:
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
-    restfreq = 112e9
-    vmin = None
-    use_vel = True
-
-elif na == 4:
-    fitsfile = sys.argv[1]
-    pos = [int(sys.argv[2]),int(sys.argv[3])]
+    restfreq = None
+    vmin = vmax = None
     use_vel = False
 
 elif na == 2:
     fitsfile = sys.argv[1]
-    pos = None
+    pos = None    
+    restfreq = None
+    vmin = vmax = None
     use_vel = False
 
 else:
     sys.exit(1)
 
-use_vel = False
 
 
 
@@ -93,15 +88,14 @@ print(d.shape)
 
 
 #  grab the restfreq, there are at least two ways how this is done
-#if 'RESTFRQ' in h:
-#    restfreq=h['RESTFRQ']
-#elif 'RESTFREQ' in h:
-#    restfreq=h['RESTFREQ']
-#else:
-#    restfreq=None
-#print("RESTFREQ",restfreq)
-
-
+if restfreq == None:
+    if 'RESTFRQ' in h:
+        restfreq=h['RESTFRQ']
+    elif 'RESTFREQ' in h:
+        restfreq=h['RESTFREQ']
+    else:
+        restfreq= h['CRVAL3']
+print("RESTFREQ",restfreq)
 
 
 
@@ -113,9 +107,6 @@ if pos == None:
 else:
     xpos = pos[0]
     ypos = pos[1]
-
-
-
 
 
 flux     = d[:,ypos,xpos]
@@ -144,7 +135,7 @@ if use_vel:
     channelv = (1.0-channelf/restfreq) * c
     channel = channelv
 else:
-    channel = channelf
+    channel = channelf 
 
 
 ipeak = flux.argmax()
@@ -165,31 +156,27 @@ ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
 
-
-
-
-
-if use_vel:
+if use_vel == True:
    plt.figure()  
    if vmin != None:
        channelv = ma.masked_outside(channelv,vmin,vmax)
        plt.xlim([vmin,vmax])
-   plt.plot(channelv,flux,'o-',markersize=2,label='data')
-   plt.plot(channelv,zero)
+   plt.plot(channelv/1e11,flux,'o-',markersize=2,label='data')
+   plt.plot(channelv/1e11,zero)
 #  plt.plot(x,ymodel,label='gauss')
    plt.xlabel("Velocity (km/s)")
    plt.ylabel("Flux")
-   plt.title(fitsfile + restfreq + "Spectrum at position %g %g" % (xpos,ypos))
+   plt.title("Spectrum at position %g %g" % (xpos,ypos))
    plt.legend()
    plt.show()
 
 else:  
    plt.figure()
-   plt.plot(channelf,flux,'o-',markersize=2,label='data')
-   plt.plot(channelf,zero)
+   plt.plot(channelf/1e9,flux,'o-',markersize=2,label='data')
+   plt.plot(channelf/1e9,zero)
    plt.xlabel("Frequency (GHz)")
    plt.ylabel("Flux")
-   plt.title(fitsfile + "Spectrum at position %g %g" % (xpos,ypos))
+   plt.title("Spectrum at position %g %g" % (xpos,ypos))
    plt.legend()
    plt.show()
 
