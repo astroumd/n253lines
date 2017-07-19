@@ -1,0 +1,37 @@
+#! /usr/bin/env python
+#
+#       position conversion (RA,DEC)  <-> (x,y)  in a fits file
+
+from __future__ import division, print_function
+
+# python system modules
+import sys, os, math
+#
+
+import numpy as np
+import astropy.io.fits as fits
+from astropy import wcs
+
+
+fitsfile = sys.argv[1]
+
+hdulist = fits.open(fitsfile)
+w = wcs.WCS(hdulist[0].header)
+
+print("NAXIS", w.wcs.naxis)
+w.printwcs()
+
+xpos = float(sys.argv[2])
+ypos = float(sys.argv[3])
+
+if True:
+    # 
+    world = w.wcs_pix2world(xpos,ypos,1.0,1.0,1)
+    ra = world[0]
+    dec = world[1]
+    print (ra,dec)
+else:
+    pix = w.wcs_world2pix(xpos,ypos,1.0,1.0,1)
+    xpos = pix[0]
+    ypos = pix[1]
+    print (xpos,ypos)
