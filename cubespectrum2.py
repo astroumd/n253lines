@@ -134,9 +134,12 @@ if use_vel:
 # to convert the Frequency to velocity
     channelv = (1.0-channelf/restfreq) * c
     channel = channelv
+    print (channelv.min())
+    print (channelv.max())
 else:
     channel = channelf 
-
+print (channelf.min())
+print (channelf.max())
 
 ipeak = flux.argmax()
 xpeak = channel[ipeak]
@@ -161,12 +164,12 @@ if use_vel == True:
    if vmin != None:
        channelv = ma.masked_outside(channelv,vmin,vmax)
        plt.xlim([vmin,vmax])
-   plt.plot(channelv/1e11,flux,'o-',markersize=2,label='data')
-   plt.plot(channelv/1e11,zero)
+   plt.plot(channelv,flux,'o-',markersize=2,label='data')
+   plt.plot(channelv,zero)
 #  plt.plot(x,ymodel,label='gauss')
    plt.xlabel("Velocity (km/s)")
    plt.ylabel("Flux")
-   plt.title("Spectrum at position %g %g" % (xpos,ypos))
+   plt.title(fitsfile +"  @ %g %g" % (xpos,ypos)+ "   %g" % (restfreq)+ 'Ghz')
    plt.legend()
    plt.show()
 
@@ -176,7 +179,7 @@ else:
    plt.plot(channelf/1e9,zero)
    plt.xlabel("Frequency (GHz)")
    plt.ylabel("Flux")
-   plt.title("Spectrum at position %g %g" % (xpos,ypos))
+   plt.title(fitsfile + " @ %g %g" % (xpos,ypos))
    plt.legend()
    plt.show()
 
