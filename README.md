@@ -36,9 +36,8 @@ Some N253 examples
      ./cubespectrum2.py ngc253_fullcube_compact_spw1_clean.ce.fits 138 183 113.0 -500 500
 
      # of course the km/s scale is wrong, the galaxy doesn't have a velocity of -300 as it
-     shows in this plot.   So, to get a better idea, use the line matching now to get the velocity
+     # shows in this plot.   So, to get a better idea, use the line matching now to get the velocity
 
-     # use the last output from cubespectrum2.py in line_matching
      ./line_matching.py Frequency_Flux.tab ngc253_lines.list
 
      # if you match the two strong lines on the right, it would result in roughly 197 km/s
