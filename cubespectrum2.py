@@ -23,63 +23,40 @@ from astropy.units import Quantity
 c = 299792.458     # [km/s] there should be a way to get 'c' from astropy.units ?
 
 
-
-#if len(sys.argv) == 1:
-#    print("Usage: %s fitsfile [xpos ypos] [restfreq [vmin vmax]]" % sys.argv[0])
-#    sys.exit(1)
-#elif len(sys.argv) == 3:
-#    print("need ypos")
-#    sys.exit(1)
-#elif len(sys.argv) > 3:
-#    fitsfile = sys.argv[1]
-#    pos = [int(sys.argv[2]),int(sys.argv[3])]
-#elif len(sys.argv) == 2:
-#    fitsfile = sys.argv[1]
-#    pos = None
-
-
-
-
 na = len(sys.argv)
-
 if na == 7:
     fitsfile = sys.argv[1] 
     pos = [int(sys.argv[2]),int(sys.argv[3])]
-    restfreq = float(sys.argv[4])
+    restfreq = float(sys.argv[4])* 1e9
     vmin = float(sys.argv[5])
     vmax = float(sys.argv[6])
     use_vel = True
-
 elif na == 5: 
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
     vmin = vmax = None
-    restfreq = float(sys.argv[4])
+    restfreq = float(sys.argv[4])* 1e9
     use_vel = True
-
 elif na == 4:
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
     restfreq = None
     vmin = vmax = None
     use_vel = False
-
 elif na == 2:
     fitsfile = sys.argv[1]
     pos = None    
     restfreq = None
     vmin = vmax = None
     use_vel = False
-
 else:
     sys.exit(1)
-
-
 
 
 # open the fits file
 hdu = fits.open(fitsfile)
 print(len(hdu))
+
 
 # get a reference to the header and data.  Data should be 3dim numpy array now
 h = hdu[0].header
@@ -98,7 +75,6 @@ if restfreq == None:
 print("RESTFREQ",restfreq)
 
 
-
 if pos == None:
     # the FITS reference pixel is always a good backup
     xpos = int(h['CRPIX1'])
@@ -111,9 +87,11 @@ else:
 
 flux     = d[:,ypos,xpos]
 
+
 nchan    = d.shape[0]       
 channeln = np.arange(nchan)
 zero     = np.zeros(nchan)
+
 
 cdelt3 = h['CDELT3']
 crval3 = h['CRVAL3']
@@ -141,9 +119,11 @@ else:
 print (channelf.min())
 print (channelf.max())
 
+
 ipeak = flux.argmax()
 xpeak = channel[ipeak]
 ypeak = flux[ipeak]
+
 
 # moments around the peak
 m = 50
@@ -158,7 +138,6 @@ print("MEAN/DISP/FWHM:",xmean,xdisp,fwhm)
 ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
-
 if use_vel == True:
    plt.figure()  
    if vmin != None:
@@ -169,10 +148,9 @@ if use_vel == True:
 #  plt.plot(x,ymodel,label='gauss')
    plt.xlabel("Velocity (km/s)")
    plt.ylabel("Flux")
-   plt.title(fitsfile +"  @ %g %g" % (xpos,ypos)+ "   %g" % (restfreq)+ 'Ghz')
+   plt.title(fitsfile +"  @ %g %g" % (xpos,ypos)+ "   %g" % (restfreq/1e9)+ 'Ghz')
    plt.legend()
    plt.show()
-
 else:  
    plt.figure()
    plt.plot(channelf/1e9,flux,'o-',markersize=2,label='data')
