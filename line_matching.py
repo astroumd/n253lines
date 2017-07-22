@@ -300,7 +300,9 @@ def makespectfile(afile):
         y = []
         with open(afile) as f:
             for line in f:
+                line = line.strip()
                 if line.startswith('#'): continue
+                if line.endswith('nan'): continue
                 (freq,flux) = line.split()
                 x.append(float(freq))
                 y.append(float(flux))
