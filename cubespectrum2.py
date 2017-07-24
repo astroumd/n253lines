@@ -13,6 +13,7 @@
 #     - resample the gauss finer (not 5 points but may be 10x more?)
 
 
+
 import os, sys, math
 import numpy as np
 import numpy.ma as ma
@@ -25,6 +26,7 @@ c = 299792.458     # [km/s] there should be a way to get 'c' from astropy.units 
 
 na = len(sys.argv)
 if na == 7:
+# Must be in Km/s
     fitsfile = sys.argv[1] 
     pos = [int(sys.argv[2]),int(sys.argv[3])]
     restfreq = float(sys.argv[4])* 1e9
@@ -32,23 +34,26 @@ if na == 7:
     vmax = float(sys.argv[6])
     use_vel = True
 elif na == 5: 
+# Must be in GHz
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
     vmin = vmax = None
     restfreq = float(sys.argv[4])* 1e9
     use_vel = True
 elif na == 4:
+# Pixel position
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
     restfreq = None
     vmin = vmax = None
     use_vel = False
 elif na == 2:
+# Fits file
     fitsfile = sys.argv[1]
     pos = None    
     restfreq = None
     vmin = vmax = None
-    use_vel = False
+    use_vel = False 
 else:
     sys.exit(1)
 
@@ -126,16 +131,17 @@ ypeak = flux[ipeak]
 
 
 # moments around the peak
-m = 50
-x = channel[ipeak-m:ipeak+m]
-y = flux[ipeak-m:ipeak+m]
-xmean = (x*y).sum() / y.sum()
-xdisp = (x*x*y).sum() / y.sum() - xmean*xmean
-if xdisp > 0:
-    xdisp = math.sqrt(xdisp)
-fwhm = 2.355 * xdisp    
-print("MEAN/DISP/FWHM:",xmean,xdisp,fwhm)
-ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
+if na == 7:
+    m = 5
+    x = channel[ipeak-m:ipeak+m]
+    y = flux[ipeak-m:ipeak+m]
+    xmean = (x*y).sum() / y.sum()
+    xdisp = (x*x*y).sum() / y.sum() - xmean*xmean
+    if xdisp > 0:
+        xdisp = math.sqrt(xdisp)
+    fwhm = 2.355 * xdisp    
+    print("MEAN/DISP/FWHM:",xmean,xdisp,fwhm)
+    ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
 
 
 if use_vel == True:
@@ -145,7 +151,7 @@ if use_vel == True:
        plt.xlim([vmin,vmax])
    plt.plot(channelv,flux,'o-',markersize=2,label='data')
    plt.plot(channelv,zero)
-#  plt.plot(x,ymodel,label='gauss')
+#   plt.plot(x,ymodel,label='gauss')
    plt.xlabel("Velocity (km/s)")
    plt.ylabel("Flux")
    plt.title(fitsfile +"  @ %g %g" % (xpos,ypos)+ "   %g" % (restfreq/1e9)+ 'Ghz')
