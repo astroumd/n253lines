@@ -424,8 +424,8 @@ def toggletiers(label):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1 or len(sys.argv) > 6:
-        print("Usage: {0} spectrum [tier1 [tier2 [tier3 [restfreq]]]]".format(sys.argv[0]))
+    if len(sys.argv) == 1 or len(sys.argv) > 7:
+        print("Usage: {0} spectrum [tier1 [tier2 [tier3 [vlsr [vmax]]]]]".format(sys.argv[0]))
         sys.exit(0)
 
 
@@ -434,9 +434,6 @@ if __name__ == "__main__":
         spectrum_file = sys.argv[1]
 
     freq,amp = makespectfile(spectrum_file)
-    
-    
-
 
     frav  = (freq.min()+freq.max())/2
     frmin = freq.min() - 0.001*frav
@@ -449,9 +446,7 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
     plt.subplots_adjust(left=0.25, bottom=0.25) #make room for buttons and such
 
-    
-    
-
+ 
     if len(sys.argv) > 2:
         tier1_file    = sys.argv[2]
         tier1 = makelinedict(tier1_file)
@@ -466,9 +461,9 @@ if __name__ == "__main__":
         lns3,ann3 = plotsetlines(3,tier3,False,amp.max()+0.1*aav,amp.max()+0.8*aav)
 
     d0 = 0.0                # 236.0 for N253
-    if len(sys.argv) == 6:
+    if len(sys.argv) >= 6:
         d0 = float(sys.argv[5])
-    c = 299792.458          # speed of light
+    c = 299792.458          # speed of light (m/s)
     z0 = d0/c               
 
     l,k = plotspec(z0)
@@ -492,10 +487,12 @@ if __name__ == "__main__":
 
         samp.on_changed(updatev)
 
-    
-
-    vmin = -300.0
-    vmax = 3000.0
+    if len(sys.argv) == 7:
+        vmin = 0.0
+        vmax = float(sys.argv[6])
+    else:
+        vmin = -300.0
+        vmax = 3000.0
 
     zmin = -0.01
     zmax = 3
