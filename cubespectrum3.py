@@ -128,14 +128,8 @@ print (channelf.max()/1e9)
 
 
 
-def gfit3(x,y):
-    sp = pyspeckit.Spectrum(data=y, xarr=x, error=None, header=h,)
-    sp.specfit(fittype='gaussian')
-#    sp.baseline()
-    print(x)
-    print(y)
 
-def gfit(xi,yi,m=5):
+def gfit1(xi,yi,m=5):
     """
     moments around a peak
     (also) rely on number of pixels left and right of the peak. Masking optional
@@ -160,7 +154,7 @@ def gfit(xi,yi,m=5):
     ymodel = ypeak * np.exp(-0.5*(xi-xmean)**2/(xdisp*xdisp))
     return ymodel
 
-def gfit(x,y):
+def gfit2(x,y):
     """
     rely on masking completely
     moments around a peak    
@@ -177,7 +171,34 @@ def gfit(x,y):
     ymodel = ypeak * np.exp(-0.5*(x-xmean)**2/(xdisp*xdisp))
     return ymodel
 
+def gfit3(xi,yi):
+    """
+    relies on masking , use pyspeckit
+    """
+    # not sure if we need this, or try x = xi
+    x = ma.compressed(xi)
+    y = ma.compressed(yi)    
+    sp = pyspeckit.Spectrum(data=y, xarr=x, error=None, header=h,)
+    sp.plotter()
+    sp.specfit(fittype='gaussian')
+    sp.specfit.plot_fit()
+#    sp.baseline()
+    print(x)
+    print(y)
+    # fake a return array 
+    return yi
 
+def gfit4(x,y):
+    """
+        relies on masking , use scipy's curve_fit
+    """
+    def gauss(x, *p):
+        A, mu, sigma, B = p
+        return A*np.exp(-(x-mu)**2/(2.*sigma**2)) + B
+    # the curve fit stuff will go here
+    #
+    return y
+    
 if use_vel == True:
    plt.figure()  
    if vmin != None:
