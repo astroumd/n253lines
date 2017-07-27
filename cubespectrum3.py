@@ -18,6 +18,7 @@ import os, sys, math
 import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
+import pyspeckit
 
 from astropy.io import fits
 from astropy.units import Quantity
@@ -127,7 +128,14 @@ print (channelf.max()/1e9)
 
 
 
-def gfit1(xi,yi,m=5):
+def gfit3(x,y):
+    sp = pyspeckit.Spectrum(data=y, xarr=x, error=None, header=h,)
+    sp.specfit(fittype='gaussian')
+#    sp.baseline()
+    print(x)
+    print(y)
+
+def gfit(xi,yi,m=5):
     """
     moments around a peak
     (also) rely on number of pixels left and right of the peak. Masking optional
@@ -152,11 +160,12 @@ def gfit1(xi,yi,m=5):
     ymodel = ypeak * np.exp(-0.5*(xi-xmean)**2/(xdisp*xdisp))
     return ymodel
 
-def gfit2(x,y):
+def gfit(x,y):
     """
     rely on masking completely
     moments around a peak    
     """
+    print("GFIT2")
     xmean = (x*y).sum() / y.sum()
     xdisp = (x*x*y).sum() / y.sum() - xmean*xmean
     if xdisp > 0:
@@ -176,8 +185,9 @@ if use_vel == True:
        flux     = ma.masked_array(flux, channelv.mask)
        plt.xlim([vmin,vmax])
        if True:
-           ymodel = gfit1(channelv,flux)
+           ymodel = gfit3(channelv,flux)
            plt.plot(channelv,ymodel,label='gfit1')
+           
    plt.plot(channelv,flux,'o-',markersize=2,label='data')
    plt.plot(channelv,zero)
    plt.xlabel("Velocity (km/s)")
