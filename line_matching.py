@@ -329,7 +329,7 @@ def plotsetlines(tier,lines,toggle,lmin,lmax):
     maxl = lmax
     if tier == 1:
         minl = lmin / 100
-        lw = 1
+        lw = 2
         
     elif tier == 2:
         minl = lmin * 1.05
@@ -454,11 +454,11 @@ if __name__ == "__main__":
     if len(sys.argv) > 3:
         tier2_file    = sys.argv[3]
         tier2 = makelinedict(tier2_file)
-        lns2,ann2 = plotsetlines(2,tier2,False,amp.max()+0.1*aav,amp.max()+0.8*aav)
+        lns2,ann2 = plotsetlines(2,tier2,True,amp.max()+0.1*aav,amp.max()+0.8*aav)
     if len(sys.argv) > 4:
         tier3_file    = sys.argv[4]
         tier3 = makelinedict(tier3_file)
-        lns3,ann3 = plotsetlines(3,tier3,False,amp.max()+0.1*aav,amp.max()+0.8*aav)
+        lns3,ann3 = plotsetlines(3,tier3,True,amp.max()+0.1*aav,amp.max()+0.8*aav)
 
     d0 = 0.0                # 236.0 for N253
     if len(sys.argv) >= 6:
