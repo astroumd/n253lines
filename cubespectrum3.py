@@ -19,15 +19,27 @@ import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
 import pyspeckit
+from scipy.optimize import curve_fit
 
 from astropy.io import fits
 from astropy.units import Quantity
 c = 299792.458     # [km/s] there should be a way to get 'c' from astropy.units ?
 
 
+#  set common command line options (unless overriden below)
+vlsr = None
+    
 na = len(sys.argv)
-if na == 7:
-# Must be in Km/s
+if na == 8:
+    fitsfile = sys.argv[1] 
+    pos = [int(sys.argv[2]),int(sys.argv[3])]
+    restfreq = float(sys.argv[4])* 1e9
+    vmin = float(sys.argv[5])
+    vmax = float(sys.argv[6])
+    vlsr = float(sys.argv[7])
+    use_vel = False
+elif na == 7:
+    # Must be in Km/s
     fitsfile = sys.argv[1] 
     pos = [int(sys.argv[2]),int(sys.argv[3])]
     restfreq = float(sys.argv[4])* 1e9
@@ -35,27 +47,28 @@ if na == 7:
     vmax = float(sys.argv[6])
     use_vel = True
 elif na == 5: 
-# Must be in GHz
+    # Must be in GHz
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
     vmin = vmax = None
     restfreq = float(sys.argv[4])* 1e9
     use_vel = True
 elif na == 4:
-# Pixel position
+    # Pixel position
     fitsfile = sys.argv[1]
     pos = [int(sys.argv[2]),int(sys.argv[3])]
     restfreq = None
     vmin = vmax = None
     use_vel = False
 elif na == 2:
-# Fits file
+    # Fits file
     fitsfile = sys.argv[1]
     pos = None    
     restfreq = None
     vmin = vmax = None
     use_vel = False 
 else:
+    print("Usage: %s fitsfile [xpos ypos] [restfreq [vmin vmax] [vlsr]" % sys.argv[0])
     sys.exit(1)
 
 
@@ -78,7 +91,7 @@ if restfreq == None:
         restfreq=h['RESTFREQ']
     else:
         restfreq= h['CRVAL3']
-print("RESTFREQ",restfreq)
+print("RESTFREQ",restfreq/1e9)
 
 
 if pos == None:
@@ -114,16 +127,10 @@ channelf = (channeln-crpix3+1)*cdelt3 + crval3
 #channel = channelf
 #channel = channeln
 
-if use_vel:
 # to convert the Frequency to velocity
-    channelv = (1.0-channelf/restfreq) * c
-    channel = channelv
-    print (channelv.min())
-    print (channelv.max())
-else:
-    channel = channelf 
-print (channelf.min()/1e9)
-print (channelf.max()/1e9)
+channelv = (1.0-channelf/restfreq) * c
+print (channelv.min(), channelv.max())
+print (channelf.min()/1e9, channelf.max()/1e9)
 
 
 
@@ -182,7 +189,7 @@ def gfit3(xi,yi):
     sp.plotter()
     sp.specfit(fittype='gaussian')
     sp.specfit.plot_fit()
-#    sp.baseline()
+    # sp.baseline()
     print(x)
     print(y)
     # fake a return array 
@@ -195,36 +202,81 @@ def gfit4(x,y):
     def gauss(x, *p):
         A, mu, sigma, B = p
         return A*np.exp(-(x-mu)**2/(2.*sigma**2)) + B
-    # the curve fit stuff will go here
     #
-    return y
+    # first get some initial estimates
+    B = y.min()
+    A = y.max() - B
+    sigma = (x.max() - x.min() ) /2.0 / 2.5     # this can be done better, moment analysis?
+    mu    = (x.max() + x.min() ) /2.0
+    p0 = [A, mu, sigma, B]
+    # p0 = [0.030544054, 50, 200, 0.029194169]
+
+    print("p0 = ",p0)
+    
+    coeff, cm = curve_fit(gauss, x, y, p0=p0)
+    ymodel = gauss(x, *coeff)
+    
+    print("Fitted amp            :",coeff[0])
+    print("Fitted mean           :",coeff[1])
+    print("Fitted sigma and FWHM :",coeff[2], coeff[2]*2.355)
+    print("Fitted baseline       :",coeff[3])
+    print("Covariance Matrix     :\n",cm)
+    # what are now the errors in the fitted values?
+    print("error amp     :",math.sqrt(cm[0][0]))
+    print("error mean    :",math.sqrt(cm[1][1]))
+    print("error sigma   :",math.sqrt(cm[2][2]))
+    print("error baseline:",math.sqrt(cm[3][3]))
+    
+    return ymodel,coeff[1]
     
 if use_vel == True:
-   plt.figure()  
-   if vmin != None:
-       channelv = ma.masked_outside(channelv,vmin,vmax)
-       flux     = ma.masked_array(flux, channelv.mask)
-       plt.xlim([vmin,vmax])
-       if True:
-           ymodel = gfit3(channelv,flux)
-           plt.plot(channelv,ymodel,label='gfit1')
-           
-   plt.plot(channelv,flux,'o-',markersize=2,label='data')
-   plt.plot(channelv,zero)
-   plt.xlabel("Velocity (km/s)")
-   plt.ylabel("Flux")
-   plt.title(fitsfile +"  @ %g %g" % (xpos,ypos)+ "   %g" % (restfreq/1e9)+ 'Ghz')
-   plt.legend()
-   plt.show()
+    plt.figure()  
+    if vmin != None:
+        # mask
+        channelv = ma.masked_outside(channelv,vmin,vmax)
+        flux     = ma.masked_array(flux, channelv.mask)
+        # make arrays smaller
+        channelv = ma.compressed(channelv)
+        flux     = ma.compressed(flux)
+        # plotting
+        # plt.xlim([vmin,vmax])         # technically not needed
+        ymodel,vfit = gfit4(channelv,flux)
+        plt.plot(channelv,ymodel,label='gfit4')
+        
+    plt.plot(channelv,flux,'o-',markersize=2,label='data')
+    # plt.plot(channelv,zero)
+    plt.xlabel("Velocity (km/s)")
+    plt.ylabel("Flux")
+    plt.title(fitsfile +"  @ %g %g" % (xpos,ypos)+ "   %g" % (restfreq/1e9)+ 'Ghz')
+    plt.legend()
+    plt.show()
 else:  
-   plt.figure()
-   plt.plot(channelf/1e9,flux,'o-',markersize=2,label='data')
-   plt.plot(channelf/1e9,zero)
-   plt.xlabel("Frequency (GHz)")
-   plt.ylabel("Flux")
-   plt.title(fitsfile + " @ %g %g" % (xpos,ypos))
-   plt.legend()
-   plt.show()
+    plt.figure()
+    if vlsr != None:
+        print ("TODO")
+        channelv = ma.masked_outside(channelv,vmin,vmax)
+        channelf = ma.masked_array(channelf, channelv.mask)        
+        flux     = ma.masked_array(flux,     channelv.mask)
+        #
+        channelv = ma.compressed(channelv)
+        channelf = ma.compressed(channelf)
+        flux     = ma.compressed(flux)
+        
+        ymodel,ffit = gfit4(channelf/1e9,flux)
+        plt.plot(channelf/1e9,ymodel,label='gfit4')
+        plt.plot(channelf/1e9,flux,'o-',markersize=2,label='data')
+
+        # compute restfreq
+        f0 = ffit / (1-vlsr/c)
+        print("Fitted restfreq f0=",f0)
+    else:
+        plt.plot(channelf/1e9,flux,'o-',markersize=2,label='data')
+        plt.plot(channelf/1e9,zero)
+    plt.xlabel("Frequency (GHz)")
+    plt.ylabel("Flux")
+    plt.title(fitsfile + " @ %g %g" % (xpos,ypos))
+    plt.legend()
+    plt.show()
 
 
 #to create a table of the frequency and flux
