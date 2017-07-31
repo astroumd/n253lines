@@ -360,7 +360,7 @@ def plotspec(delt=0.0):
 
 def updateh(val):
     global old_v, old_z
-    v = svlsr.val/c
+    v = svlsr.val/cms
     z = sreds.val
 
     delt = None
@@ -381,8 +381,17 @@ def updateh(val):
         old_v  = v
         old_z  = z
         print("delt={0}".format(delt))
-        fac = 1.0 + delt
-        l.set_xdata(freq*fac)
+        if True:
+            # optical
+            fac = 1.0 + delt
+            freq_plot = freq*fac
+        else:
+            # radio
+            fac = 1.0 - delt            
+            freq_plot = freq / fac
+        #print(freq[0],freq[-1])
+        #print(freq_plot[0],freq_plot[-1])
+        l.set_xdata(freq_plot)
         fig.canvas.draw_idle()
     else:
         print("delt was not set .... odd....")
@@ -463,8 +472,8 @@ if __name__ == "__main__":
     d0 = 0.0                # 236.0 for N253
     if len(sys.argv) >= 6:
         d0 = float(sys.argv[5])
-    c = 299792.458          # speed of light (m/s)
-    z0 = d0/c               
+    cms = 299792.458          # speed of light (m/s)
+    z0 = d0/cms
 
     l,k = plotspec(z0)
 
