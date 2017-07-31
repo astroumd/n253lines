@@ -133,6 +133,10 @@ print (channelv.min(), channelv.max())
 print (channelf.min()/1e9, channelf.max()/1e9)
 
 
+#to create a table of the frequency and flux
+xtab = channelf /1e9 #to set the freqency to GHz
+ytab = flux 
+np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ',header=("Frequency""       " "Flux"),comments='#',fmt='%.8f')
 
 
 
@@ -278,11 +282,6 @@ else:
     plt.legend()
     plt.show()
 
-
-#to create a table of the frequency and flux
-xtab = channelf /1e9 #to set the freqency to GHz
-ytab = flux 
-np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ',header=("Frequency""       " "Flux"),comments='#',fmt='%.8f')
 
 
 
