@@ -283,6 +283,15 @@ else:
     plt.show()
 
 
+print("Mean and RMS of %d points: %g %g" % (len(flux),flux.mean(),flux.std()))
+
+#to create a table of the frequency and flux
+xtab = channelf /1e9 #to set the freqency to GHz
+ytab = flux 
+np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ',header=("Frequency""       " "Flux"),comments='#',fmt='%.8f')
+
+
+
 
 
 
