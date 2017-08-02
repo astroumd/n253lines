@@ -316,7 +316,9 @@ def makelinedict(afile):
     with open(afile) as f:
         for line in f:
             if line.startswith('#'): continue
-            (key,val) = line.split()
+            w = line.split()
+            key = w[0]
+            val = w[1]
             tier[val] = key
     print("Found %d lines in %s" % (len(tier),afile))
     return tier
