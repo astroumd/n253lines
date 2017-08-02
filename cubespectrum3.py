@@ -129,14 +129,15 @@ channelf = (channeln-crpix3+1)*cdelt3 + crval3
 
 # to convert the Frequency to velocity
 channelv = (1.0-channelf/restfreq) * c
-#print (channelv.min(), channelv.max())
-#print (channelf.min()/1e9, channelf.max()/1e9)
+print (channelv.min(), channelv.max())
+print (channelf.min()/1e9, channelf.max()/1e9)
 
 
 #to create a table of the frequency and flux
 xtab = channelf /1e9 #to set the freqency to GHz
 ytab = flux 
-np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ',header=("Frequency""       " "Flux"),comments='#',fmt='%.8f')
+w = (fitsfile + str(pos))
+np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ', header = (w), comments='#',fmt='%.8f')
 
 
 
@@ -245,10 +246,7 @@ if use_vel == True:
         # plotting
         # plt.xlim([vmin,vmax])         # technically not needed
         ymodel,vfit = gfit4(channelv,flux)
-        plt.plot(channelv,ymodel,label='gfit4')
-    
-    print (channelv.min(), channelv.max())
-    print (channelf.min()/1e9, channelf.max()/1e9)    
+        plt.plot(channelv,ymodel,label='gfit4')    
     plt.plot(channelv,flux,'o-',markersize=2,label='data')
     # plt.plot(channelv,zero)
     plt.xlabel("Velocity (km/s)")
@@ -271,12 +269,9 @@ else:
         ymodel,ffit = gfit4(channelf/1e9,flux)
         plt.plot(channelf/1e9,ymodel,label='gfit4')
         plt.plot(channelf/1e9,flux,'o-',markersize=2,label='data')
-
         # compute restfreq
         f0 = ffit / (1-vlsr/c)
-        print("Fitted restfreq f0=",f0)
-        print (channelv.min(), channelv.max())
-        print (channelf.min()/1e9, channelf.max()/1e9)
+        print("Fitted restfreq f0=",f0)  
     else:
         plt.plot(channelf/1e9,flux,'o-',markersize=2,label='data')
         plt.plot(channelf/1e9,zero)
@@ -285,8 +280,7 @@ else:
     plt.title(fitsfile + " @ %g %g" % (xpos,ypos))
     plt.legend()
     plt.show()
-    print (channelv.min(), channelv.max())
-    print (channelf.min()/1e9, channelf.max()/1e9)
+    
 
 print("Mean and RMS of %d points: %g %g" % (len(flux),flux.mean(),flux.std()))
 
