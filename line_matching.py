@@ -31,6 +31,7 @@ except:
 import sys
 
 
+use_optical = True
 
 if has_aw:
     class VertSlider(AxesWidget):
@@ -349,7 +350,10 @@ def plotsetlines(tier,lines,toggle,lmin,lmax):
 
 def plotspec(delt=0.0):
     """ draw the spectrum and the shadow """
-    t = freq*(1+delt)
+    if use_optical:
+        t = freq*(1+delt)
+    else:
+        t = freq/(1-delt)
     s = amp
     k, = plt.plot(t,s, lw=0.5, color='#501919')
     l, = plt.plot(t,s, lw=2, color='red',visible=True)
@@ -381,7 +385,7 @@ def updateh(val):
         old_v  = v
         old_z  = z
         print("delt={0}".format(delt))
-        if True:
+        if use_optical:
             # optical
             fac = 1.0 + delt
             freq_plot = freq*fac
@@ -473,7 +477,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 6:
         d0 = float(sys.argv[5])
     cms = 299792.458          # speed of light (m/s)
-    z0 = d0/cms
+    z0 = d0/cms               # optical convention
 
     l,k = plotspec(z0)
 
