@@ -130,7 +130,7 @@ channelf = (channeln-crpix3+1)*cdelt3 + crval3
 # to convert the Frequency to velocity
 channelv = (1.0-channelf/restfreq) * c
 print (channelv.min(), channelv.max())
-print (channelf.min()/1e9, channelf.max()/1e9)
+print ("min freq", channelf.min()/1e9, "max freq", channelf.max()/1e9)
 
 
 #to create a table of the frequency and flux
