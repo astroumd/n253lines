@@ -315,11 +315,12 @@ def makelinedict(afile):
     tier = {}
     with open(afile) as f:
         for line in f:
-            if line.startswith('#'): continue
+            if line.startswith('#'): continue    # skip comment lines
             w = line.split()
+            if len(w) < 2: continue              # skip incomplete or blank lines
             key = w[0]
             val = w[1]
-            tier[val] = key
+            tier[key] = val
     print("Found %d lines in %s" % (len(tier),afile))
     return tier
 
@@ -341,10 +342,14 @@ def plotsetlines(tier,lines,toggle,lmin,lmax):
     else:
         minl = lmin* 1.1
         lw = 1
-        
-    for name in lines:
-        x.append(float(lines[name]))
-        a.append(plt.annotate(s=name, xy=(lines[name], maxl), xytext=(lines[name], maxl+lmax*0.23), rotation=90,size='large', visible=toggle))
+
+    #  freq        : '123.456'
+    #  lines[freq] : 'H2O'
+    for freq in lines:
+        name = lines[freq]
+        ffreq = float(freq)
+        x.append(ffreq)
+        a.append(plt.annotate(s=name, xy=(ffreq, maxl), xytext=(ffreq, maxl+lmax*0.23), rotation=90,size='large', visible=toggle))
     return plt.vlines(x, minl, maxl, lw=lw,visible=toggle), a
 
 
