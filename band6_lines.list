@@ -29,10 +29,11 @@
 #
 218.76007  H2CO
 #
-219.17376  HC3N v7=1
+219.17376  HC3N     #v7=1
 #
 219.46364    .      # CH3CH2CN v = 0
 #
 219.46555    SO2
 #
+219.65677  HNCO     #v=0
 # 219.946    .      # unclear, could be edge effect, no obvious candidate
