@@ -1,7 +1,26 @@
 #
-#  File:   NGC253.spw35.I.sd.im.fits
+#  File:   Band7
 #  Range:  355.719467375 357.718712375 GHz
 #
 #
+343.43526 CH3OCHO #v=0
+#
+343.43542 CH3OCHO #v=0
+#
+344.36890 HOCO+    #17(11, 6)-16(11, 5)
+#
+345.37374 c-HCCCH  #v=0 (could be two different lines)
+#
+#354.46044 .
+#
+354.50548 HCN 
+#
+355.30847 CH2DOH
+#
+355.36622 HNC
+#
 356.73422 HCO+   #v=0
+#
 356.25545 HCN    #v2=1
+#
+357.92596 SO2    #v = 0
