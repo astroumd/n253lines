@@ -35,5 +35,9 @@
 #
 219.46555    SO2
 #
-219.65677  HNCO     #v=0
+#219.65677  HNCO     #v=0
 # 219.946    .      # unclear, could be edge effect, no obvious candidate
+#
+231.03624 t-DCOOH      #82(17,65)-81(18,64) (unseen)
+#
+231.19718 H2CO         #36(2,34) - 35(4,31) (unseen)
