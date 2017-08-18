@@ -10,6 +10,7 @@
 216.72049       .     # N= 2- 1, J=3/2-3/2, F1= 2- 1, F= 2- 2
 216.73686       .     # N= 2- 1, J=3/2-3/2, F1= 2- 1, F= 3- 2
 #
+216.94560  CH3OH    # very weak
 #
 217.10498  SiO      # pretty clean detection
 #
@@ -21,6 +22,10 @@
 217.82718  .        #   33SO
 217.82215  .        # 	c-HCCCH v=0
 #
+217.94005  c-HCCCH  # not seen before
+#
+218.15608  CH3OCHO  # not seen before
+#
 218.22219  H2CO
 #
 218.32472  HC3N
@@ -28,6 +33,10 @@
 218.45965  NH2CHO 
 #
 218.76007  H2CO
+#
+218.90336  OCS 
+#
+218.98101  HNCO     # very weak
 #
 219.17376  HC3N     #v7=1
 #
