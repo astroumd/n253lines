@@ -45,6 +45,7 @@ Example of line matching:
      ./line_matching.py Frequency_Flux.tab ngc253_lines.list
 
      # To use multiple line lists.
+     #MISSING 1_217Ghz.spectrum
      ./line_matching.py 1_217Ghz.spectrum band6_lines.list ngc253_lines.list
      
      # To set a specific velocity (279.5).
@@ -73,10 +74,10 @@ Another example:
      # Switchs plot from GHz to km/s, chose rest freq of 217.1 GHz.
      ./cubespectrum3.py 217GHz_noclean_12mOnly.fits 115 95 217.1   
 
-     # Plots between 100 and 500 km/s, plots in GHz.
+     # Plots between 100 and 500 km/s, and produces a single gauss fit directly in V
      ./cubespectrum3.py 217GHz_noclean_12mOnly.fits 115 95 217.1 100 500
 
-     # Using the correct velocity to plot a chunk of the graph (279.5 km/s), plots in velocity.
+     # Using the correct VLSR velocity to plot a chunk of the graph (279.5 km/s), plots in GHz 
      ./cubespectrum3.py 217GHz_noclean_12mOnly.fits 115 95 217.1 100 500 279.5
 
      # ./line_matching.py 1_217Ghz.spectrum band6_lines.list
@@ -84,11 +85,14 @@ Another example:
 
 Example of tabplot:
      
-     # One plot of multiple spectrum .  
+     # One plot of multiple spectrum, SD spectra in Band-7 in this case
      ./tabplot.py 1spw29.spectrum 1spw31.spectrum 1spw33.spectrum 1spw35.spectrum
+
+     #MISSING
      ./tabplot.py 1_217Ghz.spectrum 1_230.spectrum
 
      # Using tabplot can "stack" spectrums to reduce the signal to noise to make more deifne lines.
+     #MISSING
      ./tabplot.py 1spw29.spectrum 2spw29.spectrum 3spw29.spectrum 
 
 
