@@ -25,5 +25,7 @@ for filename in sys.argv[1:]:
          plt.plot( [y[0] for y in table ] )
       for x in range(1,len(table[0])):
          plt.plot( [ y[0] for y in table ], [ y[x] for y in table ] )
-
+plt.xlabel("Frequency (GHz)")
+plt.ylabel("Flux")
+plt.title()
 plt.show()
