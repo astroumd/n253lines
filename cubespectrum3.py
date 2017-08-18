@@ -20,7 +20,6 @@ import numpy.ma as ma
 import matplotlib.pyplot as plt
 import pyspeckit
 from scipy.optimize import curve_fit
-
 from astropy.io import fits
 from astropy.units import Quantity
 c = 299792.458     # [km/s] there should be a way to get 'c' from astropy.units ?
@@ -133,15 +132,11 @@ print (channelv.min(), channelv.max())
 print ("min freq", channelf.min()/1e9, "max freq", channelf.max()/1e9)
 
 
-# to create a spectrum, a table of the flux vs. (rest or sky) frequency 
-if vlsr == None:
-    xtab = channelf / 1e9                  # sky freqency to GHz
-    w = fitsfile + str(pos) + " [sky freq]"
-else:  
-    xtab = channelf / (1-vlsr/c) / 1e9     # rest freq in GHz
-    w = fitsfile + str(pos) + " [rest freq w/ vlsr=%g]" % vlsr
+#to create a table of the frequency and flux
+xtab = channelf /1e9 #to set the freqency to GHz
 ytab = flux 
-np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ', header = (w), comments='#',fmt='%.8f')
+wtab = (fitsfile + str(pos))
+np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ', header = (wtab), comments='#',fmt='%.8f')
 
 
 
@@ -261,15 +256,13 @@ if use_vel == True:
 else:  
     plt.figure()
     if vlsr != None:
-        print ("TODO")
+        print ("Gaussian Distribution")
         channelv = ma.masked_outside(channelv,vmin,vmax)
         channelf = ma.masked_array(channelf, channelv.mask)        
         flux     = ma.masked_array(flux,     channelv.mask)
-        #
         channelv = ma.compressed(channelv)
         channelf = ma.compressed(channelf)
         flux     = ma.compressed(flux)
-        
         ymodel,ffit = gfit4(channelf/1e9,flux)
         plt.plot(channelf/1e9,ymodel,label='gfit4')
         plt.plot(channelf/1e9,flux,'o-',markersize=2,label='data')
