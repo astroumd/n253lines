@@ -133,10 +133,14 @@ print (channelv.min(), channelv.max())
 print ("min freq", channelf.min()/1e9, "max freq", channelf.max()/1e9)
 
 
-#to create a table of the frequency and flux
-xtab = channelf /1e9 #to set the freqency to GHz
+# to create a spectrum, a table of the flux vs. (rest or sky) frequency 
+if vlsr == None:
+    xtab = channelf / 1e9                  # sky freqency to GHz
+    w = fitsfile + str(pos) + " [sky freq]"
+else:  
+    xtab = channelf / (1-vlsr/c) / 1e9     # rest freq in GHz
+    w = fitsfile + str(pos) + " [rest freq w/ vlsr=%g]" % vlsr
 ytab = flux 
-w = (fitsfile + str(pos))
 np.savetxt('Frequency_Flux.tab',np.c_[xtab,ytab], delimiter='  ', header = (w), comments='#',fmt='%.8f')
 
 
