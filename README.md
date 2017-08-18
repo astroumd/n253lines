@@ -46,10 +46,10 @@ Example of line matching:
 
      # To use multiple line lists.
      
-     ./line_matching.py 1_217Ghz.spectrums band6_7_lines.list ngc253_lines.list
+     ./line_matching.py 1_217Ghz.spectrum band6_7_lines.list ngc253_lines.list
      
      # To set a specific velocity (279.5).
-     ./line_matching.py 1_217Ghz.spectrums band6_7_lines.list ngc253_lines.list blank.list 279.5
+     ./line_matching.py 1_217Ghz.spectrum band6_7_lines.list ngc253_lines.list blank.list 279.5
 
      # if you match the two strong lines on the right, it would result in roughly 197 km/s
      # if you want to match the two weaker on the left, 450 km/s may seem better
@@ -80,25 +80,19 @@ Another example:
      # Using the correct VLSR velocity to plot a chunk of the graph (279.5 km/s), plots in GHz 
      ./cubespectrum3.py 217GHz_noclean_12mOnly.fits 115 95 217.1 100 500 279.5
 
-     ./line_matching.py 1_217Ghz.spectrums band6_7_lines.list
+     ./line_matching.py 1_217Ghz.spectrum band6_7_lines.list
 
 
 Example of tabplot:
      
      # One plot of multiple spectrum, SD spectra in Band-7 in this case
-     ./tabplot.py 1spw29.spectrums 1spw31.spectrums 1spw33.spectrums 1spw35.spectrums
+     ./tabplot.py 1spw29.spectrum 1spw31.spectrum 1spw33.spectrum 1spw35.spectrum
 
-     ./tabplot.py 1_217Ghz.spectrums 1_230.spectrums
+     ./tabplot.py 1_217Ghz.spectrum 1_230.spectrum
 
-     # Using tabplot can "stack" spectrums to reduce the signal to noise to make more deifne lines.
+     # Using tabplot can "stack" spectra to reduce the signal to noise to make more deifne lines.
      
-     ./tabplot.py 1spw29.spectrums 2spw29.spectrums 3spw29.spectrums 
-
-
-
-
-
-
+     ./tabplot.py 1spw29.spectrum 2spw29.spectrum 3spw29.spectrum 
 
 
 
