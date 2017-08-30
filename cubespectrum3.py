@@ -11,6 +11,8 @@
 #     - have optional RESTFRQ or RESTFREQ as 3rd argument [done]
 #     - output the spectrum in a table, much like testCubeSpectrum.tab [done]
 #     - resample the gauss finer (not 5 points but may be 10x more?)
+#
+#  Note xpos,ypos are 0 based (thus reference pixel default is off by 1 pixel)
 
 
 
